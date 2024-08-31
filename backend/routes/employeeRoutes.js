@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const {
   createEmployee,
@@ -6,26 +6,26 @@ const {
   getEmployeeById,
   updateEmployee,
   deleteEmployee,
-} = require('../controllers/employeeController');
+} = require("../controllers/employeeController");
 
 // @route   POST /api/employees
 // @desc    Create a new employee
-router.post('/employees', createEmployee);
+router.post("/employees", createEmployee);
 
 // @route   GET /api/employees
 // @desc    Get all employees
-router.get('/employees', getEmployees);
+router.get("/employees", getEmployees);
 
 // @route   GET /api/employees/:id
 // @desc    Get a single employee by ID
-router.get('/employees/:id', getEmployeeById);
+router.get("/employees/number/:employeeNumber", getEmployeeById);
 
 // @route   PUT /api/employees/:id
 // @desc    Update an employee
-router.put('/employees/:id', updateEmployee);
+router.put("/employees/:id", updateEmployee);
 
 // @route   DELETE /api/employees/:id
 // @desc    Delete an employee
-router.delete('/employees/:id', deleteEmployee);
+router.delete("/employees/:id", deleteEmployee);
 
 module.exports = router;
