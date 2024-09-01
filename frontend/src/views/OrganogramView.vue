@@ -1,37 +1,85 @@
 <template>
   <div class="organogram-page flex">
-    <!-- Main content area for the tree view -->
     <div class="organogram-content flex-1 p-8">
       <h1 class="text-3xl font-semibold mb-6">Company Organogram</h1>
-      <TreeComponent :value="nodes" class="company-tree" />
+      <OrganizationChart :value="data" collapsible class="company-chart">
+        <template #person="slotProps">
+          <div :class="`custom-node ${slotProps.node.styleClass}`">
+            <div class="flex flex-col items-center">
+              <img
+                :alt="slotProps.node.data.name"
+                :src="slotProps.node.data.image"
+                class="mb-4 w-12 h-12 rounded-full"
+              />
+              <span class="font-bold mb-2">{{ slotProps.node.data.name }}</span>
+              <span>{{ slotProps.node.data.title }}</span>
+            </div>
+          </div>
+        </template>
+        <template #default="slotProps">
+          <span :class="slotProps.node.styleClass">{{ slotProps.node.label }}</span>
+        </template>
+      </OrganizationChart>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-import TreeComponent from 'primevue/tree' // Assuming PrimeVue is used
+import OrganizationChart from 'primevue/organizationchart'
 
-// Sample hierarchical data representing the company's structure
-const nodes = ref([
-  {
-    label: 'CEO',
-    children: [
-      {
-        label: 'CTO',
-        children: [{ label: 'Engineering Manager' }, { label: 'QA Manager' }]
+const data = ref({
+  key: '0',
+  type: 'person',
+  styleClass: 'bg-indigo-100 rounded-xl p-4',
+  data: {
+    image: 'https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png',
+    name: 'Amy Elsner',
+    title: 'CEO'
+  },
+  children: [
+    {
+      key: '0_0',
+      type: 'person',
+      styleClass: 'bg-purple-100 rounded-xl p-4',
+      data: {
+        image: 'https://primefaces.org/cdn/primevue/images/avatar/annafali.png',
+        name: 'Anna Fali',
+        title: 'CMO'
       },
-      {
-        label: 'CFO',
-        children: [{ label: 'Accounts Manager' }, { label: 'Financial Analyst' }]
+      children: [
+        {
+          label: 'Sales',
+          styleClass: 'bg-purple-200 rounded-xl p-4'
+        },
+        {
+          label: 'Marketing',
+          styleClass: 'bg-purple-200 rounded-xl p-4'
+        }
+      ]
+    },
+    {
+      key: '0_1',
+      type: 'person',
+      styleClass: 'bg-teal-100 rounded-xl p-4',
+      data: {
+        image: 'https://primefaces.org/cdn/primevue/images/avatar/stephenshaw.png',
+        name: 'Stephen Shaw',
+        title: 'CTO'
       },
-      {
-        label: 'COO',
-        children: [{ label: 'Operations Manager' }, { label: 'Logistics Manager' }]
-      }
-    ]
-  }
-])
+      children: [
+        {
+          label: 'Development',
+          styleClass: 'bg-teal-200 rounded-xl p-4'
+        },
+        {
+          label: 'UI/UX Design',
+          styleClass: 'bg-teal-200 rounded-xl p-4'
+        }
+      ]
+    }
+  ]
+})
 </script>
 
 <style scoped>
@@ -40,22 +88,24 @@ const nodes = ref([
   height: 100vh;
 }
 
-.sidebar {
-  width: 240px;
-  background-color: var(--color-background-soft);
-  border-right: 1px solid var(--color-border);
-}
-
 .organogram-content {
   flex: 1;
   padding: 20px;
   overflow-y: auto;
 }
 
-.company-tree {
-  background-color: var(--color-background);
+.company-chart {
+  background-color: #f9fafb;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.custom-node {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  justify-content: center;
+  text-align: center;
 }
 </style>

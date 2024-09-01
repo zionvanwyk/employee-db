@@ -14,12 +14,12 @@
 export default {
   data() {
     return {
-      searchQuery: ''
+      searchQuery: '' // This will hold the search query
     }
   },
   methods: {
     onSearch() {
-      this.$emit('search', this.searchQuery)
+      this.$emit('search', this.searchQuery) // Emit the search event with the search query
     }
   }
 }

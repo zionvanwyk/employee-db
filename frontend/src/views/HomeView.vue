@@ -3,57 +3,89 @@
     <div class="main-content">
       <h1>Employees</h1>
       <div class="actions-bar">
-        <SearchBar @search="handleSearch" />
-        <SortDropdown @sort="handleSort" />
-        <FilterDropdown :roles="roles" :managers="managers" @filter="handleFilter" />
+        <input
+          v-model="searchQuery"
+          @input="handleSearch(searchQuery)"
+          type="text"
+          placeholder="Search employees..."
+          class="search-input"
+        />
+
+        <select
+          v-model="selectedManager"
+          @change="handleFilter({ role: selectedRole, manager: selectedManager })"
+        >
+          <option value="">All Managers</option>
+          <option value="E001">Manager 1</option>
+          <option value="E002">Manager 2</option>
+          <!-- Add more managers as needed -->
+        </select>
+
+        <select v-model="sortKey" @change="handleSort({ key: sortKey, order: sortOrder })">
+          <option value="">No Sort</option>
+          <option value="name">Sort by Name</option>
+          <option value="role">Sort by Role</option>
+          <option value="salary">Sort by Salary</option>
+        </select>
+
+        <select v-model="sortOrder" @change="handleSort({ key: sortKey, order: sortOrder })">
+          <option value="asc">Ascending</option>
+          <option value="desc">Descending</option>
+        </select>
+
         <button @click="showAddModal = true" class="add-employee-btn">Add Employee</button>
       </div>
 
       <!-- Employee Table -->
-      <table>
-        <thead>
-          <tr>
-            <th><input type="checkbox" @change="toggleSelectAll" /></th>
-            <th>Profile Picture</th>
-            <th>Name</th>
-            <th>Surname</th>
-            <th>Birth Date</th>
-            <th>Employee Number</th>
-            <th>Salary</th>
-            <th>Role</th>
-            <th>Manager</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="employee in employees" :key="employee._id">
-            <td><input type="checkbox" v-model="selectedEmployees" :value="employee._id" /></td>
-            <td>
-              <img
-                :src="employee.avatarUrl || defaultAvatar"
-                alt="Profile Picture"
-                class="profile-pic"
-              />
-            </td>
-            <td>{{ employee.name }}</td>
-            <td>{{ employee.surname }}</td>
-            <td>{{ formatDate(employee.birthDate) }}</td>
-            <td>{{ employee.employeeNumber }}</td>
-            <td>{{ employee.salary }}</td>
-            <td>{{ employee.role }}</td>
-            <td>{{ employee.manager || 'N/A' }}</td>
-            <td>
-              <button @click="editEmployee(employee)" class="text-blue-600">
-                <i class="pi pi-pencil"></i>
-              </button>
-              <button @click="deleteEmployee(employee._id)" class="text-red-600 ml-2">
-                <i class="pi pi-trash"></i>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="table-container">
+        <table class="w-full">
+          <thead>
+            <tr>
+              <th><input type="checkbox" @change="toggleSelectAll" /></th>
+              <th>Profile Picture</th>
+              <th>Name</th>
+              <th>Surname</th>
+              <th>Birth Date</th>
+              <th>Employee Number</th>
+              <th>Salary</th>
+              <th>Role</th>
+              <th>Manager</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="employee in filteredEmployees" :key="employee._id">
+              <td class="text-center">
+                <input type="checkbox" v-model="selectedEmployees" :value="employee._id" />
+              </td>
+              <td class="text-center">
+                <img
+                  :src="employee.avatarUrl || defaultAvatar"
+                  alt="Profile Picture"
+                  class="profile-pic mx-auto"
+                />
+              </td>
+              <td class="text-center">{{ employee.name }}</td>
+              <td class="text-center">{{ employee.surname }}</td>
+              <td class="text-center">{{ formatDate(employee.birthDate) }}</td>
+              <td class="text-center">{{ employee.employeeNumber }}</td>
+              <td class="text-center">{{ employee.salary }}</td>
+              <td class="text-center">{{ employee.role }}</td>
+              <td class="text-center">{{ employee.manager || 'N/A' }}</td>
+              <td class="text-center">
+                <button @click="editEmployee(employee)" class="text-blue-600">
+                  <i class="pi pi-pencil"></i>
+                </button>
+                <button @click="deleteEmployee(employee._id)" class="text-red-600 ml-2">
+                  <i class="pi pi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
+      <!-- Modals (Add and Edit) -->
       <!-- Add Employee Modal -->
       <div v-if="showAddModal" class="modal">
         <div class="modal-content">
@@ -75,17 +107,11 @@
 <script>
 import EditEmployee from '@/components/EditEmployee.vue'
 import AddEmployee from '@/components/AddEmployee.vue'
-import SearchBar from '@/components/SearchBar.vue'
-import SortDropdown from '@/components/SortDropdown.vue'
-import FilterDropdown from '@/components/FilterDropdown.vue'
 
 export default {
   components: {
     EditEmployee,
-    AddEmployee,
-    SearchBar,
-    SortDropdown,
-    FilterDropdown
+    AddEmployee
   },
   data() {
     return {
@@ -94,12 +120,55 @@ export default {
       showEditModal: false, // Controls visibility of the edit modal
       showAddModal: false, // Controls visibility of the add modal
       selectedEmployees: [], // Selected employees for bulk actions
-      defaultAvatar: 'https://via.placeholder.com/50' // Placeholder image URL
+      defaultAvatar: 'https://via.placeholder.com/50', // Placeholder image URL
+      searchQuery: '', // Search query
+      selectedRole: '', // Selected role for filtering
+      selectedManager: '', // Selected manager for filtering
+      sortKey: '', // Key to sort by
+      sortOrder: 'asc' // Sorting order (asc or desc)
     }
   },
   mounted() {
     this.fetchEmployees() // Fetch employees when the component is mounted
   },
+  computed: {
+    filteredEmployees() {
+      let filtered = this.employees
+
+      if (this.searchQuery) {
+        const query = this.searchQuery.toLowerCase()
+        filtered = filtered.filter(
+          (employee) =>
+            employee.name.toLowerCase().includes(query) ||
+            employee.surname.toLowerCase().includes(query) ||
+            employee.employeeNumber.toLowerCase().includes(query)
+        )
+      }
+
+      if (this.selectedRole) {
+        filtered = filtered.filter((employee) => employee.role === this.selectedRole)
+      }
+
+      if (this.selectedManager) {
+        filtered = filtered.filter((employee) => employee.manager === this.selectedManager)
+      }
+
+      if (this.sortKey) {
+        filtered.sort((a, b) => {
+          let result = 0
+          if (a[this.sortKey] > b[this.sortKey]) {
+            result = 1
+          } else if (a[this.sortKey] < b[this.sortKey]) {
+            result = -1
+          }
+          return this.sortOrder === 'asc' ? result : -result
+        })
+      }
+
+      return filtered
+    }
+  },
+
   methods: {
     async fetchEmployees() {
       try {
@@ -117,6 +186,20 @@ export default {
       } catch (error) {
         console.error('Fetch error:', error)
       }
+    },
+
+    handleSearch(query) {
+      this.searchQuery = query
+    },
+
+    handleFilter({ role, manager }) {
+      this.selectedRole = role
+      this.selectedManager = manager
+    },
+
+    handleSort({ key, order }) {
+      this.sortKey = key
+      this.sortOrder = order
     },
 
     toggleSelectAll(event) {
@@ -175,59 +258,29 @@ export default {
 
 <style scoped>
 /* Modal styles */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+/* Scoped Styles */
+.actions-bar {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
+  justify-content: space-between;
+  margin-bottom: 20px;
 }
 
-.modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  width: 500px;
-  max-width: 100%;
+.search-input {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
 }
 
-/* Table and other styles */
-.home-page {
-  display: flex;
-  height: 100vh;
-}
-
-.main-content {
-  flex: 1; /* Take up remaining space */
-  padding: 20px;
-  overflow-y: auto; /* Ensures the content is scrollable if it overflows */
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
+.table-container {
+  max-height: calc(100vh - 200px); /* Adjust based on the size of your header, actions-bar, etc. */
+  overflow-y: auto; /* Enable vertical scrolling */
   margin-top: 20px;
 }
 
-th,
-td {
-  padding: 10px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-}
-
-.profile-pic {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-}
-
-button i {
-  font-size: 1.2rem;
+select {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-right: 10px;
 }
 </style>
