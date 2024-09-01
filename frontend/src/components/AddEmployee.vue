@@ -1,6 +1,6 @@
 <template>
-  <div class="edit-employee-form">
-    <h2>Edit Employee</h2>
+  <div class="add-employee-form">
+    <h2>Add Employee</h2>
     <form @submit.prevent="handleSubmit">
       <div>
         <label>Name:</label>
@@ -30,44 +30,47 @@
         <label>Manager:</label>
         <input v-model="employeeData.manager" type="text" />
       </div>
-      <button type="submit">Save Changes</button>
+      <button type="submit">Add Employee</button>
+      <button @click="$emit('close')">Cancel</button>
     </form>
   </div>
 </template>
 
 <script>
 export default {
-  props: {
-    employee: Object
-  },
   data() {
     return {
-      employeeData: { ...this.employee }
+      employeeData: {
+        name: '',
+        surname: '',
+        birthDate: '',
+        employeeNumber: '',
+        salary: '',
+        role: '',
+        manager: ''
+      }
     }
   },
   methods: {
     async handleSubmit() {
       try {
-        const response = await fetch(
-          `http://localhost:5000/api/employees/number/${this.employeeData.employeeNumber}`,
-          {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${localStorage.getItem('token')}`
-            },
-            body: JSON.stringify(this.employeeData)
-          }
-        )
+        const response = await fetch('http://localhost:5000/api/employees', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify(this.employeeData)
+        })
         const data = await response.json()
         if (response.ok) {
-          this.$emit('update', data)
-          alert('Employee updated successfully')
+          this.$emit('employeeAdded', data)
+          alert('Employee added successfully')
         } else {
           alert(`Error: ${data.message}`)
         }
       } catch (error) {
-        console.error('Error updating employee:', error)
+        console.error('Error adding employee:', error)
       }
     }
   }

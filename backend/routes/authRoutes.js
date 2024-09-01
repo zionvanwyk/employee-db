@@ -1,11 +1,44 @@
 require("dotenv").config();
 const express = require("express");
+const crypto = require("crypto");
 const router = express.Router();
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const gravatar = require("gravatar");
 
 const JWT_SECRET = process.env.JWT_SECRET;
+
+function getGravatarUrl(email, size = 80) {
+  const trimmedEmail = email.trim().toLowerCase();
+  const hash = crypto.createHash("md5").update(trimmedEmail).digest("hex");
+  return `https://www.gravatar.com/avatar/${hash}?s=${size}&d=identicon`;
+}
+
+router.put("/sync-gravatar", async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const avatarUrl = getGravatarUrl(email, 100);
+    console.log("Generated Gravatar URL:", avatarUrl); // Log the generated URL
+
+    const updatedUser = await User.findOneAndUpdate(
+      { email },
+      { avatarUrl },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    console.log("Updated User:", updatedUser); // Log the updated user object
+    res.json({ avatarUrl: updatedUser.avatarUrl });
+  } catch (error) {
+    console.error("Error syncing with Gravatar:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 router.post("/register", async (req, res) => {
   try {
@@ -30,6 +63,7 @@ router.post("/register", async (req, res) => {
     user = new User({
       ...tempUser,
       password: hashedPassword,
+      avatarUrl: getGravatarUrl(email),
     });
 
     const savedUser = await user.save();
@@ -41,8 +75,6 @@ router.post("/register", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-
-module.exports = router;
 
 // Login route
 router.post("/login", async (req, res) => {

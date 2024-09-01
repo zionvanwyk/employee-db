@@ -42,13 +42,13 @@ This project is a web application designed to manage the employee hierarchy for 
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/epiuse-africa-employee-management.git
+   git clone https://github.com/zionvanwyk/employeedb.git
    ```
 
 2. Navigate to the project directory:
 
    ```bash
-   cd epiuse-africa-employee-management
+   cd employeedb
    ```
 
 3. Install dependencies for the frontend:

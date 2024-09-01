@@ -2,41 +2,11 @@
   <div class="home-page">
     <div class="main-content">
       <h1>Employees</h1>
-
-      <!-- Top Bar with Search, Filter, Sort, and Add Button -->
-      <div class="top-bar flex justify-between items-center mb-4">
-        <!-- Search Bar -->
-        <input
-          v-model="searchQuery"
-          type="text"
-          placeholder="Search employees..."
-          class="search-bar px-4 py-2 border rounded-md"
-        />
-
-        <!-- Filter Dropdown -->
-        <select v-model="selectedFilter" class="filter-dropdown px-4 py-2 border rounded-md">
-          <option value="">All Roles</option>
-          <option value="Manager">Manager</option>
-          <option value="Engineer">Engineer</option>
-          <option value="Designer">Designer</option>
-          <!-- Add more options as needed -->
-        </select>
-
-        <!-- Sort Dropdown -->
-        <select v-model="selectedSort" class="sort-dropdown px-4 py-2 border rounded-md">
-          <option value="">Sort By</option>
-          <option value="name">Name</option>
-          <option value="salary">Salary</option>
-          <option value="role">Role</option>
-        </select>
-
-        <!-- Add Employee Button -->
-        <button
-          @click="addEmployee"
-          class="add-employee-btn px-4 py-2 bg-blue-600 text-white rounded-md"
-        >
-          Add Employee
-        </button>
+      <div class="actions-bar">
+        <SearchBar @search="handleSearch" />
+        <SortDropdown @sort="handleSort" />
+        <FilterDropdown :roles="roles" :managers="managers" @filter="handleFilter" />
+        <button @click="showAddModal = true" class="add-employee-btn">Add Employee</button>
       </div>
 
       <!-- Employee Table -->
@@ -53,11 +23,10 @@
             <th>Role</th>
             <th>Manager</th>
             <th>Actions</th>
-            <!-- New Actions Column -->
           </tr>
         </thead>
         <tbody>
-          <tr v-for="employee in sortedAndFilteredEmployees" :key="employee._id">
+          <tr v-for="employee in employees" :key="employee._id">
             <td><input type="checkbox" v-model="selectedEmployees" :value="employee._id" /></td>
             <td>
               <img
@@ -76,17 +45,23 @@
             <td>
               <button @click="editEmployee(employee)" class="text-blue-600">
                 <i class="pi pi-pencil"></i>
-                <!-- Edit Icon -->
               </button>
               <button @click="deleteEmployee(employee._id)" class="text-red-600 ml-2">
                 <i class="pi pi-trash"></i>
-                <!-- Delete Icon -->
               </button>
             </td>
           </tr>
         </tbody>
       </table>
 
+      <!-- Add Employee Modal -->
+      <div v-if="showAddModal" class="modal">
+        <div class="modal-content">
+          <AddEmployee @employeeAdded="addEmployeeToList" @close="showAddModal = false" />
+        </div>
+      </div>
+
+      <!-- Edit Employee Modal -->
       <div v-if="showEditModal" class="modal">
         <div class="modal-content">
           <EditEmployee :employee="selectedEmployee" @update="updateEmployee" />
@@ -99,57 +74,38 @@
 
 <script>
 import EditEmployee from '@/components/EditEmployee.vue'
+import AddEmployee from '@/components/AddEmployee.vue'
+import SearchBar from '@/components/SearchBar.vue'
+import SortDropdown from '@/components/SortDropdown.vue'
+import FilterDropdown from '@/components/FilterDropdown.vue'
 
 export default {
   components: {
-    EditEmployee
+    EditEmployee,
+    AddEmployee,
+    SearchBar,
+    SortDropdown,
+    FilterDropdown
   },
   data() {
     return {
-      employees: [], // Will be filled with data from the API
-      selectedEmployees: [], // For checkboxes
-      defaultAvatar: 'https://via.placeholder.com/50', // Placeholder image
-      searchQuery: '', // For search functionality
-      selectedFilter: '', // For filtering by role
-      selectedSort: '' // For sorting
+      employees: [], // Employee data
+      selectedEmployee: null, // Employee selected for editing
+      showEditModal: false, // Controls visibility of the edit modal
+      showAddModal: false, // Controls visibility of the add modal
+      selectedEmployees: [], // Selected employees for bulk actions
+      defaultAvatar: 'https://via.placeholder.com/50' // Placeholder image URL
     }
   },
   mounted() {
-    this.fetchEmployees()
-  },
-  computed: {
-    sortedAndFilteredEmployees() {
-      // Filter employees based on search and role filter
-      let filtered = this.employees.filter((employee) => {
-        const matchesSearch =
-          employee.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-          employee.surname.toLowerCase().includes(this.searchQuery.toLowerCase())
-        const matchesFilter = this.selectedFilter ? employee.role === this.selectedFilter : true
-        return matchesSearch && matchesFilter
-      })
-
-      // Sort employees based on selected criterion
-      if (this.selectedSort) {
-        filtered.sort((a, b) => {
-          if (this.selectedSort === 'name') {
-            return a.name.localeCompare(b.name)
-          } else if (this.selectedSort === 'salary') {
-            return a.salary - b.salary
-          } else if (this.selectedSort === 'role') {
-            return a.role.localeCompare(b.role)
-          }
-        })
-      }
-
-      return filtered
-    }
+    this.fetchEmployees() // Fetch employees when the component is mounted
   },
   methods: {
     async fetchEmployees() {
       try {
         const response = await fetch('http://localhost:5000/api/employees', {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}` // Add authorization header if needed
+            Authorization: `Bearer ${localStorage.getItem('token')}`
           }
         })
         const data = await response.json()
@@ -162,25 +118,28 @@ export default {
         console.error('Fetch error:', error)
       }
     },
+
     toggleSelectAll(event) {
-      if (event.target.checked) {
-        this.selectedEmployees = this.employees.map((employee) => employee._id)
-      } else {
-        this.selectedEmployees = []
-      }
+      this.selectedEmployees = event.target.checked
+        ? this.employees.map((employee) => employee._id)
+        : []
     },
+
     formatDate(date) {
       const options = { year: 'numeric', month: 'long', day: 'numeric' }
       return new Date(date).toLocaleDateString(undefined, options)
     },
-    addEmployee() {
-      // Logic to add a new employee
-      console.log('Add Employee button clicked')
+
+    addEmployeeToList(newEmployee) {
+      this.employees.push(newEmployee)
+      this.showAddModal = false
     },
+
     editEmployee(employee) {
-      this.selectedEmployee = employee
+      this.selectedEmployee = { ...employee }
       this.showEditModal = true
     },
+
     updateEmployee(updatedEmployee) {
       const index = this.employees.findIndex((emp) => emp._id === updatedEmployee._id)
       if (index !== -1) {
@@ -188,27 +147,26 @@ export default {
       }
       this.showEditModal = false
     },
-    deleteEmployee(employeeId) {
+
+    async deleteEmployee(employeeId) {
       if (confirm('Are you sure you want to delete this employee?')) {
-        fetch(`http://localhost:5000/api/employees/${employeeId}`, {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-          }
-        })
-          .then((response) => {
-            if (response.ok) {
-              this.employees = this.employees.filter((employee) => employee._id !== employeeId)
-              alert('Employee deleted successfully')
-            } else {
-              response.json().then((data) => {
-                alert(`Error: ${data.message}`)
-              })
+        try {
+          const response = await fetch(`http://localhost:5000/api/employees/${employeeId}`, {
+            method: 'DELETE',
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`
             }
           })
-          .catch((error) => {
-            console.error('Error deleting employee:', error)
-          })
+          if (response.ok) {
+            this.employees = this.employees.filter((employee) => employee._id !== employeeId)
+            alert('Employee deleted successfully')
+          } else {
+            const data = await response.json()
+            alert(`Error: ${data.message}`)
+          }
+        } catch (error) {
+          console.error('Error deleting employee:', error)
+        }
       }
     }
   }
@@ -216,6 +174,29 @@ export default {
 </script>
 
 <style scoped>
+/* Modal styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 500px;
+  max-width: 100%;
+}
+
+/* Table and other styles */
 .home-page {
   display: flex;
   height: 100vh;
@@ -225,23 +206,6 @@ export default {
   flex: 1; /* Take up remaining space */
   padding: 20px;
   overflow-y: auto; /* Ensures the content is scrollable if it overflows */
-}
-
-.top-bar {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 20px;
-}
-
-.search-bar,
-.filter-dropdown,
-.sort-dropdown {
-  flex: 1;
-  max-width: 200px;
-}
-
-.add-employee-btn {
-  background-color: #2563eb; /* Tailwind blue-600 */
 }
 
 table {
