@@ -1,40 +1,84 @@
 <template>
   <div class="add-employee-form">
-    <h2>Add Employee</h2>
-    <form @submit.prevent="handleSubmit">
+    <h2 class="text-center text-2xl font-semibold mb-6">Add Employee</h2>
+    <form @submit.prevent="handleSubmit" class="space-y-4">
       <div>
-        <label>Name:</label>
-        <input v-model="employeeData.name" type="text" required />
+        <label class="block text-sm font-medium text-gray-700">Name:</label>
+        <input v-model="employeeData.name" type="text" required class="input-box" />
       </div>
       <div>
-        <label>Surname:</label>
-        <input v-model="employeeData.surname" type="text" required />
+        <label class="block text-sm font-medium text-gray-700">Surname:</label>
+        <input v-model="employeeData.surname" type="text" required class="input-box" />
       </div>
       <div>
-        <label>Birth Date:</label>
-        <input v-model="employeeData.birthDate" type="date" required />
+        <label class="block text-sm font-medium text-gray-700">Birth Date:</label>
+        <input v-model="employeeData.birthDate" type="date" required class="input-box" />
       </div>
       <div>
-        <label>Employee Number:</label>
-        <input v-model="employeeData.employeeNumber" type="text" required />
+        <label class="block text-sm font-medium text-gray-700">Employee Number:</label>
+        <input v-model="employeeData.employeeNumber" type="text" required class="input-box" />
       </div>
       <div>
-        <label>Salary:</label>
-        <input v-model="employeeData.salary" type="number" required />
+        <label class="block text-sm font-medium text-gray-700">Salary:</label>
+        <input v-model="employeeData.salary" type="number" required class="input-box" />
       </div>
       <div>
-        <label>Role:</label>
-        <input v-model="employeeData.role" type="text" required />
+        <label class="block text-sm font-medium text-gray-700">Role:</label>
+        <input v-model="employeeData.role" type="text" required class="input-box" />
       </div>
       <div>
-        <label>Manager:</label>
-        <input v-model="employeeData.manager" type="text" />
+        <label class="block text-sm font-medium text-gray-700">Manager:</label>
+        <input v-model="employeeData.manager" type="text" class="input-box" />
       </div>
-      <button type="submit">Add Employee</button>
-      <button @click="$emit('close')">Cancel</button>
+      <div class="flex justify-end space-x-4">
+        <button type="submit" class="btn-primary">Add Employee</button>
+        <button @click="$emit('close')" class="btn-secondary">Cancel</button>
+      </div>
     </form>
   </div>
 </template>
+
+<style scoped>
+.add-employee-form {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff;
+}
+
+.input-box {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  margin-top: 4px;
+}
+
+.btn-primary {
+  background-color: #001744;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #357ab8;
+}
+
+.btn-secondary {
+  background-color: #e2e2e2;
+  color: #333;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background-color: #b5b5b5;
+}
+</style>
 
 <script>
 export default {

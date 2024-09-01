@@ -28,20 +28,11 @@
       </template>
 
       <template #end>
-        <button
-          v-ripple
-          class="relative overflow-hidden w-full border-0 bg-transparent flex items-center p-2 hover:bg-blue-highlight rounded-lg cursor-pointer transition-colors duration-200 mt-8"
-        >
-          <AvatarComponent
-            :image="user.avatarUrl || defaultAvatar"
-            class="mr-4 w-8 h-8"
-            shape="circle"
-          />
-          <span class="flex flex-col items-start text-left">
-            <span class="text-xl font-bold">{{ user.fullName }}</span>
-            <span class="text-sm">{{ user.role }}</span>
-          </span>
-        </button>
+        <div class="user-profile">
+          <img :src="userProfile.avatarUrl" alt="Profile Picture" class="profile-pic" />
+          <span class="user-name">{{ userProfile.name }} {{ userProfile.surname }}</span>
+          <span class="user-role">{{ userProfile.role }}</span>
+        </div>
       </template>
     </MenuComponent>
   </div>
@@ -57,7 +48,7 @@ const items = ref([
     to: '/home'
   },
   {
-    label: 'Organogram',
+    label: 'Organisation Chart',
     icon: 'pi pi-folder',
     to: '/organogram'
   },
@@ -73,37 +64,29 @@ const items = ref([
 export default {
   data() {
     return {
-      user: {
-        fullName: '', // Will be set dynamically
-        role: '', // Will be set dynamically
-        avatarUrl: '' // Will be set dynamically or default to a placeholder
-      },
-      defaultAvatar: 'https://via.placeholder.com/50' // Default avatar if no Gravatar is available
+      userProfile: {}
     }
   },
   mounted() {
-    this.fetchUserData() // Fetch user data when component mounts
+    this.fetchUserProfile()
   },
   methods: {
-    async fetchUserData() {
+    async fetchUserProfile() {
       try {
-        const response = await fetch('http://localhost:5000/api/auth/me', {
+        const response = await fetch('http://localhost:5000/api/profile', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }
         })
-        const data = await response.json()
-        if (response.ok) {
-          this.user = {
-            fullName: `${data.name} ${data.surname}`, // Concatenate name and surname
-            role: data.role,
-            avatarUrl: data.avatarUrl || this.defaultAvatar
-          }
-        } else {
-          console.error('Error fetching user data:', data.message)
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
         }
+
+        const data = await response.json()
+        this.userProfile = data
       } catch (error) {
-        console.error('Fetch error:', error)
+        console.error('Error fetching user profile:', error)
       }
     }
   }

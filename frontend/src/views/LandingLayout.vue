@@ -1,25 +1,35 @@
 <template>
   <div class="flex min-h-screen">
-    <aside class="w-1/4 bg-gray-100 p-6 flex flex-col items-start">
-      <img alt="EPIUSE logo" class="logo mb-6" src="@/assets/epiuse-logo.png" height="125" />
-      <div class="wrapper text-black">
-        <h1 class="font-lato text-xl mb-4">Welcome to EPI-USE Africa</h1>
-        <nav class="font-openSans">
-          <RouterLink to="/login" class="block mb-2 text-blue-500 hover:underline"
-            >Login</RouterLink
-          >
-          <RouterLink to="/register" class="block text-blue-500 hover:underline"
-            >Register</RouterLink
-          >
+    <aside class="w-1/2 bg-gray-100 p-6 flex flex-col items-center justify-center">
+      <img alt="EPIUSE logo" class="logo mb-12 h-52" src="@/assets/epiuse-logo.png" />
+      <div class="wrapper text-black text-center">
+        <h1 class="font-lato text-3xl mb-8">Welcome to EPI-USE Africa's Employee Database</h1>
+        <p class="text-lg mb-6">
+          This application is designed to manage employee data for EPI-USE Africa. All employees are
+          required to register using their official employee email addresses. <br />
+          <br />
+          Please log in or register to access your account and manage your details.
+        </p>
+        <nav class="font-openSans text-2xl">
+          <RouterLink to="/login" class="block mb-2 text-red hover:underline">Login</RouterLink>
+          <RouterLink to="/register" class="block text-red hover:underline">Register</RouterLink>
         </nav>
       </div>
     </aside>
 
-    <main class="flex-1 flex items-center justify-center p-6 bg-white">
-      <RouterView />
+    <main class="flex-1 flex flex-col items-center justify-start p-6 bg-white">
+      <div class="w-full">
+        <RouterView />
+      </div>
     </main>
   </div>
 </template>
+
 <script setup>
-import { RouterView } from 'vue-router'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+// Set the default route to the login page
+router.push('/login')
 </script>
