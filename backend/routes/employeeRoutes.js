@@ -11,7 +11,7 @@ const {
 // @route   POST /api/employees
 // @desc    Create a new employee
 // Works!
-router.post("/employees", createEmployee);
+router.post("/employees", roleMiddleware(["admin"]), createEmployee);
 
 // @route   GET /api/employees
 // @desc    Get all employees
@@ -26,16 +26,24 @@ router.get("/employees/number/:employeeNumber", getEmployeeById);
 // @route   PUT /api/employees/:id
 // @desc    Update an employee by ID
 // Doesn't work
-router.put("/employees/:id", updateEmployee);
+router.put("/employees/:id", roleMiddleware(["admin"]), updateEmployee);
 
 // @route   PUT /api/employees/:id
 // @desc    Update an employee
 // Works!
-router.put("/employees/number/:employeeNumber", updateEmployee);
+router.put(
+  "/employees/number/:employeeNumber",
+  roleMiddleware(["admin"]),
+  updateEmployee
+);
 
 // @route   DELETE /api/employees/:id
 // @desc    Delete an employee
 // Works!
-router.delete("/employees/number/:employeeNumber", deleteEmployee);
+router.delete(
+  "/employees/number/:employeeNumber",
+  roleMiddleware(["admin"]),
+  deleteEmployee
+);
 
 module.exports = router;

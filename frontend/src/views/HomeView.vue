@@ -33,7 +33,9 @@
           <option value="desc">Descending</option>
         </select>
 
-        <button @click="showAddModal = true" class="add-employee-btn">Add Employee</button>
+        <button v-if="user.role === 'admin'" @click="showAddModal = true" class="add-employee-btn">
+          Add Employee
+        </button>
       </div>
 
       <!-- Employee Table -->
@@ -69,7 +71,7 @@
               <td class="text-center">{{ employee.surname }}</td>
               <td class="text-center">{{ formatDate(employee.birthDate) }}</td>
               <td class="text-center">{{ employee.employeeNumber }}</td>
-              <td class="text-center">{{ employee.salary }}</td>
+              <td v-if="user.role === 'admin'" class="text-center">{{ employee.salary }}</td>
               <td class="text-center">{{ employee.role }}</td>
               <td class="text-center">{{ employee.manager || 'N/A' }}</td>
               <td class="text-center">
@@ -87,7 +89,7 @@
 
       <!-- Modals (Add and Edit) -->
 
-      <div v-if="showDeleteModal" class="modal-overlay">
+      <div v-if="(user.role === 'admin') & showDeleteModal" class="modal-overlay">
         <div class="modal-content">
           <p>Are you sure you want to delete this employee?</p>
           <div class="button-container">
@@ -100,14 +102,14 @@
       </div>
 
       <!-- Add Employee Modal -->
-      <div v-if="showAddModal" class="modal-overlay">
+      <div v-if="(user.role === 'admin') & showAddModal" class="modal-overlay">
         <div class="modal-content">
           <AddEmployee @employeeAdded="addEmployeeToList" @close="showAddModal = false" />
         </div>
       </div>
 
       <!-- Edit Employee Modal -->
-      <div v-if="showEditModal" class="modal-overlay">
+      <div v-if="(user.role === 'admin') & showEditModal" class="modal-overlay">
         <div class="modal-content">
           <EditEmployee
             :employee="selectedEmployee"

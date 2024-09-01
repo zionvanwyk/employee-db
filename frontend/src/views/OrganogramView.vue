@@ -2,32 +2,16 @@
   <div class="organogram-page flex">
     <div class="organogram-content flex-1 p-8">
       <h1 class="text-3xl font-semibold mb-6">Company Organogram</h1>
-      <OrganizationChart
-        v-model:selectionKeys="selection"
-        :value="nodes"
-        collapsible
-        selectionMode="multiple"
-      >
-        <template #person="slotProps">
-          <div class="flex flex-col items-center">
-            <span class="font-bold mb-2">{{ slotProps.node.data.name }}</span>
-            <span>{{ slotProps.node.data.title }}</span>
-          </div>
-        </template>
-        <template #default="slotProps">
-          <span>{{ slotProps.node.label }}</span>
-        </template>
-      </OrganizationChart>
+      <div ref="chart" class="organization-chart"></div>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import OrganizationChart from 'primevue/organizationchart'
+import * as d3 from 'd3'
 
-const nodes = ref([]) // This will hold the tree structure
-const selection = ref({})
+const chartRef = ref(null) // Reference to the chart container
 
 // Function to fetch employees and build the tree structure
 async function fetchAndBuildTree() {
@@ -39,39 +23,86 @@ async function fetchAndBuildTree() {
     })
     const employees = await response.json()
 
-    console.log('Fetched Employees:', employees) // Check if employees are fetched correctly
-
+    // Map employees by employeeNumber for easy lookup
     const employeeMap = {}
     employees.forEach((employee) => {
       employeeMap[employee.employeeNumber] = {
-        key: employee.employeeNumber,
-        type: 'person',
-        data: {
-          image: employee.avatarUrl || 'https://via.placeholder.com/50',
-          name: `${employee.name} ${employee.surname}`,
-          title: employee.role
-        },
+        name: `${employee.name} ${employee.surname}`,
+        title: employee.role,
         children: []
       }
     })
 
-    console.log('Employee Map:', employeeMap) // Check if employeeMap is built correctly
-
-    const tree = []
+    // Build the hierarchy
+    const root = { name: 'Company', children: [] }
     employees.forEach((employee) => {
       if (employee.manager && employeeMap[employee.manager]) {
         employeeMap[employee.manager].children.push(employeeMap[employee.employeeNumber])
       } else {
-        tree.push(employeeMap[employee.employeeNumber]) // Top-level nodes (no manager)
+        root.children.push(employeeMap[employee.employeeNumber]) // Top-level nodes (no manager)
       }
     })
 
-    console.log('Final Tree Structure:', tree) // Check final tree structure
-
-    nodes.value = tree
+    // Build the D3 tree layout
+    buildTree(root)
   } catch (error) {
     console.error('Error fetching employees:', error)
   }
+}
+
+// Function to build the tree layout using D3.js
+function buildTree(data) {
+  const width = 960
+  const height = 600
+
+  const svg = d3
+    .select(chartRef.value)
+    .append('svg')
+    .attr('width', width)
+    .attr('height', height)
+    .append('g')
+    .attr('transform', 'translate(40,0)')
+
+  const treeLayout = d3.tree().size([height, width - 160])
+  const root = d3.hierarchy(data)
+
+  treeLayout(root)
+
+  // Links
+  svg
+    .selectAll('.link')
+    .data(root.links())
+    .enter()
+    .append('path')
+    .attr('class', 'link')
+    .attr('fill', 'none')
+    .attr('stroke', '#ccc')
+    .attr('stroke-width', 2)
+    .attr(
+      'd',
+      d3
+        .linkHorizontal()
+        .x((d) => d.y)
+        .y((d) => d.x)
+    )
+
+  // Nodes
+  const node = svg
+    .selectAll('.node')
+    .data(root.descendants())
+    .enter()
+    .append('g')
+    .attr('class', 'node')
+    .attr('transform', (d) => `translate(${d.y},${d.x})`)
+
+  node.append('circle').attr('r', 10).attr('fill', '#69b3a2')
+
+  node
+    .append('text')
+    .attr('dy', 3)
+    .attr('x', (d) => (d.children ? -12 : 12))
+    .style('text-anchor', (d) => (d.children ? 'end' : 'start'))
+    .text((d) => `${d.data.name} - ${d.data.title}`)
 }
 
 onMounted(() => {
@@ -98,9 +129,19 @@ onMounted(() => {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.custom-node {
-  display: flex;
-  align-items: center;
-  font-weight: bold;
+.link {
+  fill: none;
+  stroke: #555;
+  stroke-width: 2px;
+}
+
+.node circle {
+  fill: #999;
+  stroke: steelblue;
+  stroke-width: 3px;
+}
+
+.node text {
+  font: 12px sans-serif;
 }
 </style>
