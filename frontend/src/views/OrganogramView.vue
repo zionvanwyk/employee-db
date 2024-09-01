@@ -1,8 +1,5 @@
 <template>
   <div class="organogram-page flex">
-    <!-- Include the sidenavbar -->
-    <SideNavbar class="sidebar" />
-
     <!-- Main content area for the tree view -->
     <div class="organogram-content flex-1 p-8">
       <h1 class="text-3xl font-semibold mb-6">Company Organogram</h1>
@@ -13,7 +10,6 @@
 
 <script setup>
 import { ref } from 'vue'
-import SideNavbar from '@/components/SideNavbar.vue'
 import TreeComponent from 'primevue/tree' // Assuming PrimeVue is used
 
 // Sample hierarchical data representing the company's structure

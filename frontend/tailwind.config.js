@@ -4,7 +4,8 @@ export default {
     extend: {
       colors: {
         blue: {
-          DEFAULT: '#001744'
+          DEFAULT: '#001744',
+          highlight: '#001E59' // Add missing #
         },
         red: {
           DEFAULT: '#CE1443'

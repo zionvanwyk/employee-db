@@ -12,9 +12,11 @@ router.post("/register", async (req, res) => {
     const { username, email, password, role } = req.body;
 
     // Check if user already exists
-    let user = await User.findOne({ email });
+    let user = await User.findOne({ $or: [{ username }, { email }] });
     if (user) {
-      return res.status(400).json({ message: "User already exists" });
+      return res
+        .status(400)
+        .json({ message: "Username or email already exists" });
     }
 
     // Hash the password
@@ -45,10 +47,12 @@ module.exports = router;
 // Login route
 router.post("/login", async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { identifier, password } = req.body;
 
     // Check if the user exists
-    const user = await User.findOne({ email });
+    const user = await User.findOne({
+      $or: [{ username: identifier }, { email: identifier }],
+    });
     if (!user) {
       return res.status(400).json({ message: "Invalid credentials" });
     }

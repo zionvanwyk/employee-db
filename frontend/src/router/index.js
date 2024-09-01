@@ -5,6 +5,7 @@ import RegisterView from '@/views/RegisterView.vue'
 import LandingLayout from '@/views/LandingLayout.vue'
 import OrganogramView from '@/views/OrganogramView.vue'
 import SettingsView from '@/views/SettingsView.vue'
+import AppHeader from '@/views/AppHeader.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,21 +28,41 @@ const router = createRouter({
       ]
     },
     {
-      path: '/home',
-      name: 'home',
-      component: HomeView
+      path: '/',
+      component: AppHeader,
+      children: [
+        {
+          path: '/home',
+          component: HomeView
+        },
+        {
+          path: '/settings',
+          component: SettingsView
+        },
+        {
+          path: '/organogram',
+          component: OrganogramView
+        }
+      ],
+      meta: { requiresAuth: true }
     },
     {
-      path: '/organogram',
-      name: 'organogram',
-      component: OrganogramView
-    },
-    {
-      path: '/settings',
-      name: 'settings',
-      component: SettingsView
+      path: '/:catchAll(.*)', // Catch-all route for 404 pages
+      redirect: '/login'
     }
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  const loggedIn = !!localStorage.getItem('token')
+
+  if (to.matched.some((record) => record.meta.requiresAuth) && !loggedIn) {
+    // User is not authenticated, redirect to login page
+    next('/login')
+  } else {
+    // User is authenticated or the route does not require authentication
+    next()
+  }
 })
 
 export default router
