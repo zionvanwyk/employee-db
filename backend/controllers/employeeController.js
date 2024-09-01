@@ -36,7 +36,7 @@ exports.getEmployees = async (req, res) => {
 };
 
 // Get a single employee by ID
-exports.getEmployeeByNumber = async (req, res) => {
+exports.getEmployeeById = async (req, res) => {
   try {
     const employee = await Employee.findOne({
       employeeNumber: req.params.employeeNumber,
@@ -55,12 +55,23 @@ exports.getEmployeeByNumber = async (req, res) => {
 exports.updateEmployee = async (req, res) => {
   try {
     const updates = req.body;
+    const { id, employeeNumber } = req.params;
 
-    const employee = await Employee.findByIdAndUpdate(req.params.id, updates, {
+    let query;
+    if (id) {
+      query = { _id: id };
+    } else if (employeeNumber) {
+      query = { employeeNumber: employeeNumber };
+    } else {
+      return res.status(400).json({ message: "No identifier provided" });
+    }
+    const employee = await Employee.findOneAndUpdate(query, updates, {
       new: true,
     });
+
     if (!employee)
       return res.status(404).json({ message: "Employee not found" });
+
     res.json(employee);
   } catch (error) {
     console.error("Error updating employee:", error.message);
@@ -68,12 +79,15 @@ exports.updateEmployee = async (req, res) => {
   }
 };
 
-// Delete an employee
+// Delete an employee using employee ID
 exports.deleteEmployee = async (req, res) => {
   try {
-    const employee = await Employee.findByIdAndDelete(req.params.id);
-    if (!employee)
+    const employee = await Employee.findOneAndDelete({
+      employeeNumber: req.params.employeeNumber,
+    });
+    if (!employee) {
       return res.status(404).json({ message: "Employee not found" });
+    }
     res.json({ message: "Employee deleted successfully" });
   } catch (error) {
     console.error("Error deleting employee:", error.message);

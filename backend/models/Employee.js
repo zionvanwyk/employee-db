@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const EmployeeSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -8,7 +8,7 @@ const EmployeeSchema = new mongoose.Schema({
   salary: { type: Number, required: true },
   role: { type: String, required: true },
   manager: { type: String, default: null }, // Stores employeeNumber of manager
-  avatarUrl: { type: String, default: '' }, // For Gravatar integration
+  avatarUrl: { type: String, default: "" }, // For Gravatar integration
 });
 
-module.exports = mongoose.model('Employee', EmployeeSchema);
+module.exports = mongoose.model("Employee", EmployeeSchema, "Employees");
