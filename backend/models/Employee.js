@@ -9,6 +9,7 @@ const EmployeeSchema = new mongoose.Schema({
   role: { type: String, required: true },
   manager: { type: String, default: null }, // Stores employeeNumber of manager
   avatarUrl: { type: String, default: "" }, // For Gravatar integration
+  email: { type: String, required: true, unique: true },
 });
 
 module.exports = mongoose.model("Employee", EmployeeSchema, "Employees");
