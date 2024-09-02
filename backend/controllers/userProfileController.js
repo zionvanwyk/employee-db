@@ -24,7 +24,8 @@ exports.getUserProfile = async (req, res) => {
       fullName: `${employee.name} ${employee.surname}`,
       employeeID: employee.employeeNumber,
       email: user.email,
-      role: employee.role,
+      roleDisplay: employee.role,
+      role: user.role,
       avatarUrl: user.avatarUrl, // Gravatar URL or any other avatar URL
     };
 

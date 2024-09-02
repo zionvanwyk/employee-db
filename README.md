@@ -78,7 +78,7 @@ This project is a web application designed to manage the employee hierarchy for 
      ```
    - Start the frontend development server:
      ```bash
-     npm run serve
+     npm run dev
      ```
 
 7. Open your browser and navigate to `http://localhost:8080` to see the application.

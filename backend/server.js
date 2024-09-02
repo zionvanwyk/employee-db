@@ -3,7 +3,6 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 const employeeRoutes = require("./routes/employeeRoutes");
 const authRoutes = require("./routes/authRoutes");
-const profileRoutes = require("./routes/profileRoutes");
 
 require("dotenv").config();
 
@@ -17,7 +16,6 @@ app.use(cors({ origin: "http://localhost:5173" }));
 
 app.use("/api", employeeRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/profile", profileRoutes);
 
 app.get("/", (req, res) => {
   res.send("Employee DB Backend is running.");

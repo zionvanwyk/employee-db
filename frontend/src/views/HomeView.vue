@@ -49,10 +49,10 @@
               <th>Surname</th>
               <th>Birth Date</th>
               <th>Employee Number</th>
-              <th>Salary</th>
               <th>Role</th>
               <th>Manager</th>
               <th>Actions</th>
+              <th>Email</th>
             </tr>
           </thead>
           <tbody>
@@ -82,6 +82,7 @@
                   <i class="pi pi-trash"></i>
                 </button>
               </td>
+              <td class="text-center">{{ employee.email }}</td>
             </tr>
           </tbody>
         </table>
@@ -134,6 +135,7 @@ export default {
   data() {
     return {
       employees: [], // Employee data
+      user: {},
       selectedEmployee: null, // Employee selected for editing
       showEditModal: false, // Controls visibility of the edit modal
       showAddModal: false, // Controls visibility of the add modal
@@ -149,7 +151,8 @@ export default {
     }
   },
   mounted() {
-    this.fetchEmployees() // Fetch employees when the component is mounted
+    this.fetchEmployees(), // Fetch employees when the component is mounted
+      this.fetchUserProfile()
   },
   computed: {
     filteredEmployees() {
@@ -205,6 +208,25 @@ export default {
         }
       } catch (error) {
         console.error('Fetch error:', error)
+      }
+    },
+
+    async fetchUserProfile() {
+      try {
+        const response = await fetch('http://localhost:5000/api/profile', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        })
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+
+        const data = await response.json()
+        this.user = data
+      } catch (error) {
+        console.error('Error fetching user profile:', error)
       }
     },
 

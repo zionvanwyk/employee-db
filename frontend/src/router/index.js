@@ -43,7 +43,8 @@ const router = createRouter({
           path: 'organogram',
           component: OrganogramView
         }
-      ]
+      ],
+      meta: { requiresAuth: true }
     },
     {
       path: '/:catchAll(.*)', // Catch-all route for 404 pages
@@ -57,9 +58,9 @@ router.beforeEach((to, from, next) => {
 
   if (to.matched.some((record) => record.meta.requiresAuth) && !loggedIn) {
     // User is not authenticated, redirect to login page
+    console.log('User is not authenticated, redirect to login page')
     next('/login')
   } else {
-    // User is authenticated or the route does not require authentication
     next()
   }
 })

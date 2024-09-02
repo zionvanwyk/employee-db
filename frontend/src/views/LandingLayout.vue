@@ -12,7 +12,6 @@
         </p>
         <nav class="font-openSans text-2xl">
           <RouterLink to="/login" class="block mb-2 text-red hover:underline">Login</RouterLink>
-          <RouterLink to="/register" class="block text-red hover:underline">Register</RouterLink>
         </nav>
       </div>
     </aside>
