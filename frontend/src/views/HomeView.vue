@@ -33,7 +33,7 @@
           <option value="desc">Descending</option>
         </select>
 
-        <button v-if="user.role === 'admin'" @click="showAddModal = true" class="add-employee-btn">
+        <button @click="showAddModal = true" class="add-employee-btn" v-if="user.role === admin">
           Add Employee
         </button>
       </div>
@@ -49,10 +49,11 @@
               <th>Surname</th>
               <th>Birth Date</th>
               <th>Employee Number</th>
+              <th v-if="user.role === admin">Salary</th>
               <th>Role</th>
               <th>Manager</th>
-              <th>Actions</th>
               <th>Email</th>
+              <th v-if="user.role === admin">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -71,10 +72,11 @@
               <td class="text-center">{{ employee.surname }}</td>
               <td class="text-center">{{ formatDate(employee.birthDate) }}</td>
               <td class="text-center">{{ employee.employeeNumber }}</td>
-              <td v-if="user.role === 'admin'" class="text-center">{{ employee.salary }}</td>
+              <td v-if="user.role === admin" class="text-center">{{ employee.salary }}</td>
               <td class="text-center">{{ employee.role }}</td>
               <td class="text-center">{{ employee.manager || 'N/A' }}</td>
-              <td class="text-center">
+              <td class="text-center">{{ employee.email }}</td>
+              <td v-if="user.role === admin" class="text-center">
                 <button @click="editEmployee(employee)" class="text-blue-600">
                   <i class="pi pi-pencil"></i>
                 </button>
@@ -82,7 +84,6 @@
                   <i class="pi pi-trash"></i>
                 </button>
               </td>
-              <td class="text-center">{{ employee.email }}</td>
             </tr>
           </tbody>
         </table>
@@ -90,7 +91,7 @@
 
       <!-- Modals (Add and Edit) -->
 
-      <div v-if="(user.role === 'admin') & showDeleteModal" class="modal-overlay">
+      <div v-if="(user.role === admin) & showDeleteModal" class="modal-overlay">
         <div class="modal-content">
           <p>Are you sure you want to delete this employee?</p>
           <div class="button-container">
@@ -103,14 +104,14 @@
       </div>
 
       <!-- Add Employee Modal -->
-      <div v-if="(user.role === 'admin') & showAddModal" class="modal-overlay">
+      <div v-if="(user.role === admin) & showAddModal" class="modal-overlay">
         <div class="modal-content">
           <AddEmployee @employeeAdded="addEmployeeToList" @close="showAddModal = false" />
         </div>
       </div>
 
       <!-- Edit Employee Modal -->
-      <div v-if="(user.role === 'admin') & showEditModal" class="modal-overlay">
+      <div v-if="(user.role === admin) & showEditModal" class="modal-overlay">
         <div class="modal-content">
           <EditEmployee
             :employee="selectedEmployee"

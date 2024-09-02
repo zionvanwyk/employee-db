@@ -5,14 +5,10 @@
       <div class="wrapper text-black text-center">
         <h1 class="font-lato text-3xl mb-8">Welcome to EPI-USE Africa's Employee Database</h1>
         <p class="text-lg mb-6">
-          This application is designed to manage employee data for EPI-USE Africa. All employees are
-          required to register using their official employee email addresses. <br />
+          This application is designed to manage employee data for EPI-USE Africa. <br />
           <br />
-          Please log in or register to access your account and manage your details.
+          Please log in to access your account and manage your details.
         </p>
-        <nav class="font-openSans text-2xl">
-          <RouterLink to="/login" class="block mb-2 text-red hover:underline">Login</RouterLink>
-        </nav>
       </div>
     </aside>
 
