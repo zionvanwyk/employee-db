@@ -138,8 +138,8 @@ export default {
   },
   data() {
     return {
-      employees: [], // Employee data
       user: {},
+      employees: [], // Employee data
       selectedEmployee: null, // Employee selected for editing
       showEditModal: false, // Controls visibility of the edit modal
       showAddModal: false, // Controls visibility of the add modal

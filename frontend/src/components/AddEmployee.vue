@@ -102,17 +102,18 @@ export default {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`
+            Authorization: `Bearer ${localStorage.getItem('token')}` // Make sure the token is valid and contains the correct role
           },
           body: JSON.stringify(this.employeeData)
         })
-        const data = await response.json()
-        if (response.ok) {
-          this.$emit('employeeAdded', data)
-          alert('Employee added successfully')
-        } else {
-          alert(`Error: ${data.message}`)
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
         }
+
+        const data = await response.json()
+        this.$emit('employeeAdded', data)
+        alert('Employee added successfully')
       } catch (error) {
         console.error('Error adding employee:', error)
       }

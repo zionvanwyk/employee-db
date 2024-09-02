@@ -10,9 +10,9 @@ const {
 const roleMiddleware = require("../middleware/roleMiddleware");
 
 // @route   POST /api/employees
-// @desc    Create a new employee
+// @desc    Create a new employee (only admin)
 // Works!
-router.post("/employees", roleMiddleware(["admin"]), createEmployee);
+router.post("/employees", roleMiddleware("admin"), createEmployee);
 
 // @route   GET /api/employees
 // @desc    Get all employees
@@ -27,14 +27,14 @@ router.get("/employees/number/:employeeNumber", getEmployeeById);
 // @route   PUT /api/employees/:id
 // @desc    Update an employee by ID
 // Doesn't work
-router.put("/employees/:id", roleMiddleware(["admin"]), updateEmployee);
+router.put("/employees/:id", roleMiddleware(), updateEmployee);
 
 // @route   PUT /api/employees/:id
 // @desc    Update an employee
 // Works!
 router.put(
   "/employees/number/:employeeNumber",
-  roleMiddleware(["admin"]),
+  roleMiddleware(),
   updateEmployee
 );
 
@@ -43,7 +43,7 @@ router.put(
 // Works!
 router.delete(
   "/employees/number/:employeeNumber",
-  roleMiddleware(["admin"]),
+  roleMiddleware(),
   deleteEmployee
 );
 
