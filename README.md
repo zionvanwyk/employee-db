@@ -36,6 +36,7 @@ This project is a web application designed to manage the employee hierarchy for 
 - **Node.js**: JavaScript runtime used to build the backend.
 - **Tailwind CSS**: Utility-first CSS framework for styling.
 - **Gravatar**: Service for managing profile pictures via email.
+- **Azure**: Cloud platform for deployment.
 
 ## Installation
 
@@ -81,7 +82,7 @@ This project is a web application designed to manage the employee hierarchy for 
      npm run dev
      ```
 
-7. Open your browser and navigate to `http://localhost:8080` to see the application.
+7. Open your browser and navigate to `http://localhost:5173` to see the application.
 
 ## Usage
 
