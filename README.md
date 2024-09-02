@@ -2,6 +2,8 @@
 
 This project is a web application designed to manage the employee hierarchy for EPI-USE Africa. The application allows administrators to perform CRUD (Create, Read, Update, Delete) operations on employee data, manage reporting structures, visualize the company hierarchy, and much more.
 
+Here is the link to the deployed application: https://zion-frontend.kindsand-5d1511a6.southafricanorth.azurecontainerapps.io
+
 ## Table of Contents
 
 - [EPI-USE Africa Employee Management System](#epi-use-africa-employee-management-system)
