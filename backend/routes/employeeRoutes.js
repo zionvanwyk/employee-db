@@ -7,6 +7,7 @@ const {
   updateEmployee,
   deleteEmployee,
 } = require("../controllers/employeeController");
+const roleMiddleware = require("../middleware/roleMiddleware");
 
 // @route   POST /api/employees
 // @desc    Create a new employee

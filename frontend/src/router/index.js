@@ -28,23 +28,22 @@ const router = createRouter({
       ]
     },
     {
-      path: '/',
+      path: '/app',
       component: AppHeader,
       children: [
         {
-          path: '/home',
+          path: 'home',
           component: HomeView
         },
         {
-          path: '/settings',
+          path: 'settings',
           component: SettingsView
         },
         {
-          path: '/organogram',
+          path: 'organogram',
           component: OrganogramView
         }
-      ],
-      meta: { requiresAuth: true }
+      ]
     },
     {
       path: '/:catchAll(.*)', // Catch-all route for 404 pages

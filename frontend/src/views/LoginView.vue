@@ -59,18 +59,17 @@ export default {
           })
         })
 
-        const data = await response.json()
-
-        if (response.ok) {
-          localStorage.setItem('token', data.token) // Store the JWT token
-          this.$router.push('/home') // Redirect to a protected route
-        } else {
-          console.error('Login error:', data.message)
-          alert(data.message) // Show error to the user
+        if (!response.ok) {
+          const errorData = await response.json()
+          throw new Error(errorData.message)
         }
+
+        const data = await response.json()
+        localStorage.setItem('token', data.token)
+        this.$router.push('/home')
       } catch (error) {
-        console.error('Login failed:', error)
-        alert('An error occurred. Please try again.')
+        console.error('Login failed:', error.message)
+        alert('Login failed: ' + error.message)
       }
     }
   }
