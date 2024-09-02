@@ -30,8 +30,7 @@
         </button>
       </form>
       <p class="mt-4 text-center text-sm text-gray-600">
-        Don't have an account?
-        <a href="/register" class="text-blue">Sign up</a>
+        Forgot your password? <a href="#" class="text-blue">Reset Password</a>
       </p>
     </div>
   </div>

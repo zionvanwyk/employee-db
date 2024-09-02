@@ -1,7 +1,6 @@
 <template>
   <div class="home-page">
     <div class="main-content">
-      <h1>Employees</h1>
       <div class="actions-bar">
         <input
           v-model="searchQuery"
@@ -16,9 +15,13 @@
           @change="handleFilter({ role: selectedRole, manager: selectedManager })"
         >
           <option value="">All Managers</option>
-          <option value="E001">Manager 1</option>
-          <option value="E002">Manager 2</option>
-          <!-- Add more managers as needed -->
+          <option
+            v-for="manager in managers"
+            :key="manager.employeeNumber"
+            :value="manager.employeeNumber"
+          >
+            {{ manager.name }} {{ manager.surname }}
+          </option>
         </select>
 
         <select v-model="sortKey" @change="handleSort({ key: sortKey, order: sortOrder })">
@@ -43,7 +46,6 @@
         <table class="w-full">
           <thead>
             <tr>
-              <th><input type="checkbox" @change="toggleSelectAll" /></th>
               <th>Profile Picture</th>
               <th>Name</th>
               <th>Surname</th>
@@ -59,14 +61,15 @@
           <tbody>
             <tr v-for="employee in filteredEmployees" :key="employee._id">
               <td class="text-center">
-                <input type="checkbox" v-model="selectedEmployees" :value="employee._id" />
-              </td>
-              <td class="text-center">
-                <img
-                  :src="employee.avatarUrl || defaultAvatar"
-                  alt="Profile Picture"
-                  class="profile-pic mx-auto"
-                />
+                <div class="profile-pic-container mx-auto">
+                  <img
+                    v-if="employee.avatarUrl"
+                    :src="employee.avatarUrl"
+                    alt="Profile Picture"
+                    class="profile-pic"
+                  />
+                  <div v-else class="initials">{{ employee.name[0] }}{{ employee.surname[0] }}</div>
+                </div>
               </td>
               <td class="text-center">{{ employee.name }}</td>
               <td class="text-center">{{ employee.surname }}</td>
@@ -190,6 +193,10 @@ export default {
       }
 
       return filtered
+    },
+    managers() {
+      const managerIds = new Set(this.employees.map((emp) => emp.manager).filter(Boolean))
+      return this.employees.filter((emp) => managerIds.has(emp.employeeNumber))
     }
   },
 
@@ -315,8 +322,38 @@ export default {
 </script>
 
 <style scoped>
-/* Modal styles */
-/* Scoped Styles */
+.profile-pic-container {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff; /* Fallback background color */
+  color: white;
+  font-size: 12px;
+}
+
+.profile-pic {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.initials {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #80a3ea; /* Background color for initials */
+  color: white;
+  font-size: 16px;
+  border-radius: 50%;
+}
+
 .actions-bar {
   display: flex;
   justify-content: space-between;
@@ -328,10 +365,43 @@ export default {
   border: 1px solid #ddd;
 }
 
+.home-page {
+  height: 100vh; /* Full viewport height */
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Prevents overflow issues */
+}
+
 .table-container {
-  max-height: calc(100vh - 200px); /* Adjust based on the size of your header, actions-bar, etc. */
-  overflow-y: auto; /* Enable vertical scrolling */
+  flex: 1;
+  overflow-y: auto;
   margin-top: 20px;
+  scrollbar-width: thin;
+  scrollbar-color: #001744 #f1f1f1;
+}
+
+.table-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background-color: #001744;
+  border-radius: 10px;
+  border: 2px solid #f1f1f1;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background-color: #001e59;
 }
 
 .add-employee-btn {

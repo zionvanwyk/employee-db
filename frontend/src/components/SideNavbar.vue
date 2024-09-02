@@ -28,11 +28,12 @@
       </template>
 
       <template #end>
-        <div class="user-profile">
-          <img :src="userProfile.avatarUrl" alt="Profile Picture" class="profile-pic" />
-          <span class="user-name">{{ userProfile.name }} {{ userProfile.surname }}</span>
-          <span class="user-role">{{ userProfile.role }}</span>
-        </div>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <button @click="logout" class="logout-button">Log Out</button>
       </template>
     </MenuComponent>
   </div>
@@ -46,18 +47,14 @@ const items = ref([
     label: 'All Employees',
     icon: 'pi pi-folder',
     to: '/home'
-  },
-  {
-    label: 'Organisation Chart',
-    icon: 'pi pi-folder',
-    to: '/organogram'
-  },
-  {
-    label: 'Settings',
-    icon: 'pi pi-cog',
-    to: '/settings'
   }
 ])
+
+const logout = () => {
+  // Clear the token and redirect to the login page
+  localStorage.removeItem('token')
+  window.location.href = '/login'
+}
 </script>
 
 <script>
@@ -117,5 +114,20 @@ export default {
 
 .MenuComponent a:hover span {
   color: white;
+}
+
+.logout-button {
+  background-color: #dc3545;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: #c82333;
 }
 </style>
