@@ -124,21 +124,13 @@ epiuse-africa-employee-management/
 
 ### Main Components:
 
-- **AppHeader.vue**: Contains the top bar with a logo, profile picture, and menu icon.
-- **SideNavbar.vue**: The side navigation bar available across various pages.
-- **OrganogramView.vue**: Displays the company hierarchy in a tree structure.
-- **SettingsPage.vue**: The settings page, which includes options for managing user accounts, preferences, and application features.
+- **SideNavbar.vue**: The side navigation bar with a logo available across various pages.
+- **OrganogramView.vue**: Displays the company hierarchy in a tree structure. (Currently not displayed due to incompletion)
+- **SettingsPage.vue**: The settings page, which includes options for managing user accounts, preferences, and application features. (Currently not displayed due to incompletion)
 
 ### Additional Components:
 
-- **EmployeeCard.vue**: Displays individual employee information.
-- **EmployeeForm.vue**: Form for adding or editing employee data.
-- **SearchBar.vue**: Provides a search interface for filtering employees.
+- **EditEmployee.vue**: Popup form for editing employee data.
+- **AddEmployee.vue**: Popup form for adding employee data.
+- **DeleteEmployee.vue**: Popup modal for deleting employee data.
 
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request with your changes.
-
-## License
-
-This project is licensed under the MIT License.
