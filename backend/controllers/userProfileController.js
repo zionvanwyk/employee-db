@@ -10,21 +10,25 @@ exports.getUserProfile = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+    // Find the corresponding employee based on the email address
     const employee = await Employee.findOne({ email: user.email }).select(
-      "name surname role"
+      "name surname employeeNumber role"
     );
 
     if (!employee) {
       return res.status(404).json({ message: "Employee not found" });
     }
 
+    // Construct the user profile
     const userProfile = {
-      name: employee.name,
-      surname: employee.surname,
+      fullName: `${employee.name} ${employee.surname}`,
+      employeeID: employee.employeeNumber,
+      email: user.email,
       role: employee.role,
-      avatarUrl: user.avatarUrl, // This should already be the Gravatar URL
+      avatarUrl: user.avatarUrl, // Gravatar URL or any other avatar URL
     };
 
+    // Send the profile as the response
     res.json(userProfile);
   } catch (error) {
     console.error("Error fetching user profile:", error);

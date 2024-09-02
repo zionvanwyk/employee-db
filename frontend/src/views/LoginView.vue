@@ -66,7 +66,7 @@ export default {
 
         const data = await response.json()
         localStorage.setItem('token', data.token)
-        this.$router.push('/home')
+        this.$router.push('/app/home')
       } catch (error) {
         console.error('Login failed:', error.message)
         alert('Login failed: ' + error.message)
