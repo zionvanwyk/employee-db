@@ -59,7 +59,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="employee in filteredEmployees" :key="employee._id">
+            <tr
+              v-for="employee in filteredEmployees"
+              :key="employee._id"
+              @click="showEmployeeInfo(employee)"
+              class="cursor-pointer hover:bg-gray-100"
+            >
               <td class="text-center">
                 <div class="profile-pic-container mx-auto">
                   <img
@@ -106,6 +111,12 @@
         </div>
       </div>
 
+      <EmployeeDisplay
+        v-if="showEmployeeDisplayModal"
+        :employee="selectedEmployee"
+        @close="showEmployeeDisplayModal = false"
+      />
+
       <!-- Add Employee Modal -->
       <div v-if="(user.role === admin) & showAddModal" class="modal-overlay">
         <div class="modal-content">
@@ -130,11 +141,13 @@
 <script>
 import EditEmployee from '@/components/EditEmployee.vue'
 import AddEmployee from '@/components/AddEmployee.vue'
+import EmployeeDisplay from '@/components/EmployeeDisplay.vue' // Add this import
 
 export default {
   components: {
     EditEmployee,
-    AddEmployee
+    AddEmployee,
+    EmployeeDisplay
   },
   data() {
     return {
@@ -144,6 +157,7 @@ export default {
       showEditModal: false, // Controls visibility of the edit modal
       showAddModal: false, // Controls visibility of the add modal
       selectedEmployees: [], // Selected employees for bulk actions
+      showEmployeeDisplayModal: false,
       showDeleteModal: false, // Controls visibility of the delete modal
       employeeToDelete: null,
       defaultAvatar: 'https://via.placeholder.com/50', // Placeholder image URL
@@ -263,6 +277,11 @@ export default {
     formatDate(date) {
       const options = { year: 'numeric', month: 'long', day: 'numeric' }
       return new Date(date).toLocaleDateString(undefined, options)
+    },
+
+    showEmployeeInfo(employee) {
+      this.selectedEmployee = { ...employee }
+      this.showEmployeeDisplayModal = true
     },
 
     addEmployeeToList(newEmployee) {

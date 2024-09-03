@@ -47,16 +47,6 @@ const items = ref([
     label: 'All Employees',
     icon: 'pi pi-folder',
     to: '/app/home'
-  },
-  {
-    label: 'Employee Hiearchy',
-    icon: 'pi pi-sitemap',
-    to: '/app/organogram'
-  },
-  {
-    label: 'Settings',
-    icon: 'pi pi-cog',
-    to: '/app/settings'
   }
 ])
 
