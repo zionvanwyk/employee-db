@@ -23,7 +23,7 @@
         >
           <span :class="item.icon" />
           <span class="text-lg font-medium"> {{ item.label }}</span>
-          <BadgeComponent v-if="item.badge" class="ml-auto" :value="item.badge" />
+          <BadgeComponent v-if="item.badge" :value="item.badge" />
         </router-link>
       </template>
 
@@ -46,12 +46,21 @@ const items = ref([
   {
     label: 'All Employees',
     icon: 'pi pi-folder',
-    to: '/home'
+    to: '/app/home'
+  },
+  {
+    label: 'Employee Hiearchy',
+    icon: 'pi pi-sitemap',
+    to: '/app/organogram'
+  },
+  {
+    label: 'Settings',
+    icon: 'pi pi-cog',
+    to: '/app/settings'
   }
 ])
 
 const logout = () => {
-  // Clear the token and redirect to the login page
   localStorage.removeItem('token')
   window.location.href = '/login'
 }

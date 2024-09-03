@@ -1,7 +1,6 @@
 <template>
   <div>
-    <h1 class="text-3xl font-semibold mb-6">Company Organogram</h1>
-    <div id="treeChart"></div>
+    <h1 class="text-5xl font-semibold mb-6">Company Organogram under construction</h1>
   </div>
 </template>
 

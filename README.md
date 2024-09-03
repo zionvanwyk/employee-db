@@ -2,6 +2,8 @@
 
 This project is a web application designed to manage the employee hierarchy for EPI-USE Africa. The application allows administrators to perform CRUD (Create, Read, Update, Delete) operations on employee data, manage reporting structures, visualize the company hierarchy, and much more.
 
+Here is the link to the deployed application: https://zion-frontend.kindsand-5d1511a6.southafricanorth.azurecontainerapps.io
+
 ## Table of Contents
 
 - [EPI-USE Africa Employee Management System](#epi-use-africa-employee-management-system)
@@ -36,6 +38,7 @@ This project is a web application designed to manage the employee hierarchy for 
 - **Node.js**: JavaScript runtime used to build the backend.
 - **Tailwind CSS**: Utility-first CSS framework for styling.
 - **Gravatar**: Service for managing profile pictures via email.
+- **Azure**: Cloud platform for deployment.
 
 ## Installation
 
@@ -81,7 +84,7 @@ This project is a web application designed to manage the employee hierarchy for 
      npm run dev
      ```
 
-7. Open your browser and navigate to `http://localhost:8080` to see the application.
+7. Open your browser and navigate to `http://localhost:5173` to see the application.
 
 ## Usage
 
@@ -123,21 +126,13 @@ epiuse-africa-employee-management/
 
 ### Main Components:
 
-- **AppHeader.vue**: Contains the top bar with a logo, profile picture, and menu icon.
-- **SideNavbar.vue**: The side navigation bar available across various pages.
-- **OrganogramView.vue**: Displays the company hierarchy in a tree structure.
-- **SettingsPage.vue**: The settings page, which includes options for managing user accounts, preferences, and application features.
+- **SideNavbar.vue**: The side navigation bar with a logo available across various pages.
+- **OrganogramView.vue**: Displays the company hierarchy in a tree structure. (Currently not displayed due to incompletion)
+- **SettingsPage.vue**: The settings page, which includes options for managing user accounts, preferences, and application features. (Currently not displayed due to incompletion)
 
 ### Additional Components:
 
-- **EmployeeCard.vue**: Displays individual employee information.
-- **EmployeeForm.vue**: Form for adding or editing employee data.
-- **SearchBar.vue**: Provides a search interface for filtering employees.
+- **EditEmployee.vue**: Popup form for editing employee data.
+- **AddEmployee.vue**: Popup form for adding employee data.
+- **DeleteEmployee.vue**: Popup modal for deleting employee data.
 
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request with your changes.
-
-## License
-
-This project is licensed under the MIT License.

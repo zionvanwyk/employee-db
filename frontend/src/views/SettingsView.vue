@@ -31,17 +31,6 @@
           <button @click="updateProfile" class="btn btn-primary mt-4">Save Changes</button>
         </div>
       </section>
-
-      <!-- Employee Management Section -->
-      <section class="mb-12">
-        <h2 class="text-2xl font-medium mb-4">Employee Management</h2>
-        <div class="grid grid-cols-1 gap-6">
-          <button @click="addEmployee" class="btn btn-primary">Add Employee</button>
-          <button @click="manageReportingStructure" class="btn btn-secondary">
-            Manage Reporting Structure
-          </button>
-        </div>
-      </section>
     </div>
   </div>
 </template>
@@ -49,15 +38,15 @@
 <script setup>
 import { ref } from 'vue'
 
+const user = ref({}) // Define user as a ref to be reactive
 const userProfile = ref({
-  username: 'JohnDoe',
-  email: 'johndoe@example.com',
-  avatarUrl: '' // This will be populated with Gravatar URL or existing profile picture
+  username: '',
+  email: '',
+  avatarUrl: ''
 })
 
 const defaultAvatar = 'https://via.placeholder.com/100'
 
-// Function to sync the profile picture with Gravatar
 const syncWithGravatar = async () => {
   try {
     const response = await fetch(`http://localhost:5000/api/auth/sync-gravatar`, {
@@ -112,14 +101,60 @@ const updateProfile = async () => {
   }
 }
 
-const addEmployee = () => {
-  // Logic to add a new employee
-  console.log('Add Employee')
+const fetchUserProfile = async () => {
+  try {
+    const response = await fetch('http://localhost:5000/api/profile', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    const data = await response.json()
+    user.value = data
+    userProfile.value = {
+      username: data.username,
+      email: data.email,
+      avatarUrl: data.avatarUrl || defaultAvatar
+    }
+    console.log('User Profile Data:', userProfile.value)
+  } catch (error) {
+    console.error('Error fetching user profile:', error)
+  }
 }
 
-const manageReportingStructure = () => {
-  // Logic to manage the reporting structure
-  console.log('Manage Reporting Structure')
+fetchUserProfile() // Fetch user profile when the component is setup
+</script>
+
+<script>
+export default {
+  mounted() {
+    this.fetchUserProfile()
+  },
+  methods: {
+    async fetchUserProfile() {
+      try {
+        const response = await fetch('http://localhost:5000/api/profile', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        })
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+
+        const data = await response.json()
+        this.user = data
+        console.log('User Profile Data:', this.user)
+      } catch (error) {
+        console.error('Error fetching user profile:', error)
+      }
+    }
+  }
 }
 </script>
 

@@ -138,8 +138,8 @@ export default {
   },
   data() {
     return {
-      employees: [], // Employee data
       user: {},
+      employees: [], // Employee data
       selectedEmployee: null, // Employee selected for editing
       showEditModal: false, // Controls visibility of the edit modal
       showAddModal: false, // Controls visibility of the add modal
@@ -221,9 +221,11 @@ export default {
 
     async fetchUserProfile() {
       try {
+        const token = localStorage.getItem('token')
         const response = await fetch('http://localhost:5000/api/profile', {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
           }
         })
 
