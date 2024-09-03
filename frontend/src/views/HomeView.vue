@@ -298,27 +298,35 @@ export default {
 
     async deleteEmployee(employeeId) {
       try {
-        const response = await fetch(`http://localhost:5000/api/employees/number/${employeeId}`, {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
+        const employee = this.employees.find((emp) => emp._id === employeeId)
+        if (!employee) {
+          alert('Employee not found in the local data')
+          return
+        }
+
+        const response = await fetch(
+          `http://localhost:5000/api/employees/number/${employee.employeeNumber}`,
+          {
+            method: 'DELETE',
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
           }
-        })
+        )
+
         if (response.ok) {
-          this.employees = this.employees.filter((employee) => employee._id !== employeeId)
-          alert('Employee deleted successfully')
+          this.employees = this.employees.filter((emp) => emp._id !== employeeId)
+          this.showDeleteModal = false
+          this.fetchEmployees()
         } else {
           const data = await response.json()
           alert(`Error: ${data.message}`)
         }
       } catch (error) {
         console.error('Error deleting employee:', error)
-      } finally {
-        this.showDeleteModal = false // Close the delete modal
-        this.fetchEmployees() // Refresh the employee list
       }
-      location.reload()
     },
+
     closeDeleteModal() {
       this.showDeleteModal = false
       this.employeeToDelete = null

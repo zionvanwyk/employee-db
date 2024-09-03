@@ -5,7 +5,7 @@
       <p>Are you sure you want to delete this employee?</p>
       <div class="modal-actions">
         <button @click="confirmDelete" class="confirm-btn">Delete</button>
-        <button @click="cancelDelete" class="cancel-btn">Cancel</button>
+        <button @click="this.$emit('close')" class="cancel-btn">Cancel</button>
       </div>
     </div>
   </div>
@@ -22,9 +22,6 @@ export default {
   methods: {
     confirmDelete() {
       this.$emit('confirm', this.employeeId)
-    },
-    cancelDelete() {
-      this.$emit('cancel')
     }
   }
 }

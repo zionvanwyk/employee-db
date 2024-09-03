@@ -3,8 +3,16 @@ const Employee = require("../models/Employee");
 // Create a new employee
 exports.createEmployee = async (req, res) => {
   try {
-    const { name, surname, birthDate, employeeNumber, salary, role, manager } =
-      req.body;
+    const {
+      name,
+      surname,
+      birthDate,
+      employeeNumber,
+      salary,
+      role,
+      manager,
+      email,
+    } = req.body;
 
     const newEmployee = new Employee({
       name,

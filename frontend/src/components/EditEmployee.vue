@@ -36,7 +36,7 @@
       </div>
       <div class="flex justify-end space-x-4">
         <button type="submit" class="btn-primary">Save Changes</button>
-        <button type="button" @click="handleCancel" class="btn-secondary">Cancel</button>
+        <button type="button" @click="this.$emit('close')" class="btn-secondary">Cancel</button>
       </div>
     </form>
   </div>
@@ -78,9 +78,6 @@ export default {
       }
       this.$emit('close')
       location.reload()
-    },
-    handleCancel() {
-      this.$emit('close')
     }
   }
 }

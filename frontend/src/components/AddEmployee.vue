@@ -36,11 +36,55 @@
       </div>
       <div class="flex justify-end space-x-4">
         <button type="submit" class="btn-primary">Add Employee</button>
-        <button @click="$emit('close')" class="btn-secondary">Cancel</button>
+        <button type="button" @click="this.$emit('close')" class="btn-secondary">Cancel</button>
       </div>
     </form>
   </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      employeeData: {
+        name: '',
+        surname: '',
+        birthDate: '',
+        employeeNumber: '',
+        salary: '',
+        role: '',
+        manager: '',
+        email: ''
+      }
+    }
+  },
+  methods: {
+    async handleSubmit() {
+      try {
+        const response = await fetch('http://localhost:5000/api/employees', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify(this.employeeData)
+        })
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+
+        const data = await response.json()
+        this.$emit('employeeAdded', data)
+        alert('Employee added successfully')
+        this.$emit('close')
+      } catch (error) {
+        console.error('Error adding employee:', error)
+      }
+    }
+  }
+}
+</script>
 
 <style scoped>
 .add-employee-form {
@@ -84,45 +128,44 @@
 }
 </style>
 
-<script>
-export default {
-  data() {
-    return {
-      employeeData: {
-        name: '',
-        surname: '',
-        birthDate: '',
-        employeeNumber: '',
-        salary: '',
-        role: '',
-        manager: '',
-        email: ''
-      }
-    }
-  },
-  methods: {
-    async handleSubmit() {
-      try {
-        const response = await fetch('http://localhost:5000/api/employees', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}` // Make sure the token is valid and contains the correct role
-          },
-          body: JSON.stringify(this.employeeData)
-        })
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
-        }
-
-        const data = await response.json()
-        this.$emit('employeeAdded', data)
-        alert('Employee added successfully')
-      } catch (error) {
-        console.error('Error adding employee:', error)
-      }
-    }
-  }
+<style scoped>
+.add-employee-form {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff;
 }
-</script>
+
+.input-box {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  margin-top: 4px;
+}
+
+.btn-primary {
+  background-color: #001744;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #357ab8;
+}
+
+.btn-secondary {
+  background-color: #e2e2e2;
+  color: #333;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background-color: #b5b5b5;
+}
+</style>
