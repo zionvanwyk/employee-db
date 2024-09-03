@@ -14,6 +14,7 @@ exports.createEmployee = async (req, res) => {
       salary,
       role,
       manager,
+      email,
     });
 
     const employee = await newEmployee.save();
@@ -51,26 +52,21 @@ exports.getEmployeeById = async (req, res) => {
   }
 };
 
-// Update an employee
+// Update an employee using employee ID
 exports.updateEmployee = async (req, res) => {
   try {
     const updates = req.body;
-    const { id, employeeNumber } = req.params;
+    const { employeeNumber } = req.params;
 
-    let query;
-    if (id) {
-      query = { _id: id };
-    } else if (employeeNumber) {
-      query = { employeeNumber: employeeNumber };
-    } else {
-      return res.status(400).json({ message: "No identifier provided" });
-    }
-    const employee = await Employee.findOneAndUpdate(query, updates, {
-      new: true,
-    });
+    const employee = await Employee.findOneAndUpdate(
+      { employeeNumber: employeeNumber },
+      updates,
+      { new: true }
+    );
 
-    if (!employee)
+    if (!employee) {
       return res.status(404).json({ message: "Employee not found" });
+    }
 
     res.json(employee);
   } catch (error) {

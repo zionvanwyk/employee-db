@@ -114,7 +114,7 @@
       </div>
 
       <!-- Edit Employee Modal -->
-      <div v-if="(user.role === admin) & showEditModal" class="modal-overlay">
+      <div v-if="showEditModal" class="modal-overlay">
         <div class="modal-content">
           <EditEmployee
             :employee="selectedEmployee"
@@ -268,6 +268,7 @@ export default {
     addEmployeeToList(newEmployee) {
       this.employees.push(newEmployee)
       this.showAddModal = false
+      location.reload()
     },
 
     editEmployee(employee) {
@@ -275,12 +276,14 @@ export default {
       this.showEditModal = true
     },
 
-    updateEmployee(updatedEmployee) {
+    async updateEmployee(updatedEmployee) {
       const index = this.employees.findIndex((emp) => emp._id === updatedEmployee._id)
       if (index !== -1) {
         this.$set(this.employees, index, updatedEmployee)
       }
+      await this.fetchEmployees()
       this.showEditModal = false
+      location.reload()
     },
 
     cancelDelete() {
@@ -311,10 +314,11 @@ export default {
       } catch (error) {
         console.error('Error deleting employee:', error)
       } finally {
-        this.closeDeleteModal()
+        this.showDeleteModal = false // Close the delete modal
+        this.fetchEmployees() // Refresh the employee list
       }
+      location.reload()
     },
-
     closeDeleteModal() {
       this.showDeleteModal = false
       this.employeeToDelete = null

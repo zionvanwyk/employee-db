@@ -30,6 +30,10 @@
         <label class="block text-sm font-medium text-gray-700">Manager:</label>
         <input v-model="employeeData.manager" type="text" class="input-box" />
       </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Email:</label>
+        <input v-model="employeeData.email" type="text" class="input-box" />
+      </div>
       <div class="flex justify-end space-x-4">
         <button type="submit" class="btn-primary">Save Changes</button>
         <button type="button" @click="handleCancel" class="btn-secondary">Cancel</button>
@@ -72,9 +76,11 @@ export default {
       } catch (error) {
         console.error('Error updating employee:', error)
       }
+      this.$emit('close')
+      location.reload()
     },
     handleCancel() {
-      this.$emit('close') // Emit the close event to close the modal
+      this.$emit('close')
     }
   }
 }

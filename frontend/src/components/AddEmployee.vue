@@ -30,6 +30,10 @@
         <label class="block text-sm font-medium text-gray-700">Manager:</label>
         <input v-model="employeeData.manager" type="text" class="input-box" />
       </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Email:</label>
+        <input v-model="employeeData.email" type="text" class="input-box" />
+      </div>
       <div class="flex justify-end space-x-4">
         <button type="submit" class="btn-primary">Add Employee</button>
         <button @click="$emit('close')" class="btn-secondary">Cancel</button>
@@ -91,7 +95,8 @@ export default {
         employeeNumber: '',
         salary: '',
         role: '',
-        manager: ''
+        manager: '',
+        email: ''
       }
     }
   },

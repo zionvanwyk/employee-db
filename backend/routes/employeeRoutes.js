@@ -1,5 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const authenticateToken = require("../middleware/authMiddleware");
+const roleMiddleware = require("../middleware/roleMiddleware");
+
 const {
   createEmployee,
   getEmployees,
@@ -7,43 +10,38 @@ const {
   updateEmployee,
   deleteEmployee,
 } = require("../controllers/employeeController");
-const roleMiddleware = require("../middleware/roleMiddleware");
 
-// @route   POST /api/employees
-// @desc    Create a new employee (only admin)
-// Works!
-router.post("/employees", roleMiddleware("admin"), createEmployee);
+// Route to create a new employee (only accessible to admins)
+router.post(
+  "/employees",
+  authenticateToken,
+  roleMiddleware("manager"),
+  createEmployee
+);
 
-// @route   GET /api/employees
-// @desc    Get all employees
-// Works!
-router.get("/employees", getEmployees);
+// Route to get all employees (accessible to any authenticated user)
+router.get("/employees", authenticateToken, getEmployees);
 
-// @route   GET /api/employees/:id
-// @desc    Get a single employee by ID
-// Works!
-router.get("/employees/number/:employeeNumber", getEmployeeById);
+// Route to get a single employee by employee number (accessible to any authenticated user)
+router.get(
+  "/employees/number/:employeeNumber",
+  authenticateToken,
+  getEmployeeById
+);
 
-// @route   PUT /api/employees/:id
-// @desc    Update an employee by ID
-// Doesn't work
-router.put("/employees/:id", roleMiddleware(), updateEmployee);
-
-// @route   PUT /api/employees/:id
-// @desc    Update an employee
-// Works!
+// Route to update an employee by employee number (only accessible to managers)
 router.put(
   "/employees/number/:employeeNumber",
-  roleMiddleware(),
+  authenticateToken,
+  roleMiddleware("manager"),
   updateEmployee
 );
 
-// @route   DELETE /api/employees/:id
-// @desc    Delete an employee
-// Works!
+// Route to delete an employee by employee number (only accessible to managers)
 router.delete(
   "/employees/number/:employeeNumber",
-  roleMiddleware(),
+  authenticateToken,
+  roleMiddleware("manager"),
   deleteEmployee
 );
 
