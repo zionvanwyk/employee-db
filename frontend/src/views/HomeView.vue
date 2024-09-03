@@ -63,7 +63,7 @@
               v-for="employee in filteredEmployees"
               :key="employee._id"
               @click="showEmployeeInfo(employee)"
-              class="cursor-pointer hover:bg-gray-100"
+              class="employee-row"
             >
               <td class="text-center">
                 <div class="profile-pic-container mx-auto">
@@ -85,10 +85,10 @@
               <td class="text-center">{{ employee.manager || 'N/A' }}</td>
               <td class="text-center">{{ employee.email }}</td>
               <td v-if="user.role === admin" class="text-center">
-                <button @click="editEmployee(employee)" class="text-blue-600">
+                <button @click.stop="editEmployee(employee)" class="text-blue-600">
                   <i class="pi pi-pencil"></i>
                 </button>
-                <button @click="confirmDelete(employee._id)" class="text-red-600 ml-2">
+                <button @click.stop="confirmDelete(employee._id)" class="text-red-600 ml-2">
                   <i class="pi pi-trash"></i>
                 </button>
               </td>
@@ -415,6 +415,7 @@ export default {
   flex: 1;
   overflow-y: auto;
   margin-top: 20px;
+  padding-bottom: 20px;
   scrollbar-width: thin;
   scrollbar-color: #001744 #f1f1f1;
 }
@@ -436,7 +437,6 @@ export default {
 .table-container::-webkit-scrollbar-thumb:hover {
   background-color: #001e59;
 }
-
 .add-employee-btn {
   background-color: #001744;
   color: white;
@@ -498,6 +498,14 @@ export default {
 
 .cancel-button:hover {
   background-color: #5a6268; /* Darker gray on hover */
+}
+
+.employee-row {
+  cursor: pointer; /* Show pointer cursor on row hover */
+}
+
+.employee-row:hover {
+  background-color: #f0f0f0; /* Light gray background on row hover */
 }
 
 select {
